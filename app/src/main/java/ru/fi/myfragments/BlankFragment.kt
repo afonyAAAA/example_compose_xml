@@ -1,15 +1,22 @@
 package ru.fi.myfragments
 
-import android.content.ContentValues.TAG
+import android.R
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.compose.ui.platform.ComposeView
+import androidx.fragment.app.Fragment
+import com.google.zxing.BarcodeFormat
+import com.journeyapps.barcodescanner.BarcodeEncoder
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanIntentResult
+import com.journeyapps.barcodescanner.ScanOptions
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -37,7 +44,7 @@ class BlankFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         Log.d(TAG, "onCreateView")
         // Inflate the layout for this fragment
@@ -46,17 +53,37 @@ class BlankFragment : Fragment() {
         }
     }
 
+    private val barcodeLauncher = registerForActivityResult<ScanOptions, ScanIntentResult>(
+        ScanContract()
+    ) { result: ScanIntentResult ->
+        if (result.contents == null) {
+            Toast.makeText(this.requireContext(), "Cancelled", Toast.LENGTH_LONG).show()
+        } else {
+            Toast.makeText(
+                this.requireContext(),
+                "Scanned: " + result.contents,
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    // Launch
+    fun onButtonClick(view: View?) {
+        val options = ScanOptions()
+        options.setOrientationLocked(false)
+        barcodeLauncher.launch(options)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         composeView.setContent {
-            FirstScreen {
-                Toast.makeText(requireContext(), "Jetpack is working", Toast.LENGTH_LONG).show()
-            }
+            FirstScreen( onClick = {
+                onButtonClick(view)
+            })
         }
 
     }
-
 
     companion object {
 
