@@ -11,12 +11,6 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import com.google.zxing.BarcodeFormat
-import com.journeyapps.barcodescanner.BarcodeEncoder
-import com.journeyapps.barcodescanner.ScanContract
-import com.journeyapps.barcodescanner.ScanIntentResult
-import com.journeyapps.barcodescanner.ScanOptions
-
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -53,33 +47,12 @@ class BlankFragment : Fragment() {
         }
     }
 
-    private val barcodeLauncher = registerForActivityResult<ScanOptions, ScanIntentResult>(
-        ScanContract()
-    ) { result: ScanIntentResult ->
-        if (result.contents == null) {
-            Toast.makeText(this.requireContext(), "Cancelled", Toast.LENGTH_LONG).show()
-        } else {
-            Toast.makeText(
-                this.requireContext(),
-                "Scanned: " + result.contents,
-                Toast.LENGTH_LONG
-            ).show()
-        }
-    }
-
-    // Launch
-    fun onButtonClick(view: View?) {
-        val options = ScanOptions()
-        options.setOrientationLocked(false)
-        barcodeLauncher.launch(options)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         composeView.setContent {
             FirstScreen( onClick = {
-                onButtonClick(view)
+
             })
         }
 
